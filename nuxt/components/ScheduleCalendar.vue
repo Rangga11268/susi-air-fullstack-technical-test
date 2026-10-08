@@ -406,34 +406,36 @@ function getDayAriaLabel(day: DayGridItem): string {
   }
 
   .legend-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 12px;
   }
 
   .legend-pill {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 5px;
-    background-color: rgba(14, 33, 56, 0.04);
-    padding: 3px 8px;
-    border-radius: $radius-pill;
-    font-size: 10.5px;
+    gap: 6px;
+    font-size: 11px;
+    line-height: 1.3;
 
     .color-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+      width: 9px;
+      height: 9px;
+      border-radius: 3px;
       flex-shrink: 0;
     }
 
     .legend-code {
       font-weight: 700;
       color: $color-text-primary;
+      min-width: 28px;
     }
 
     .legend-label {
       color: $color-text-secondary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }

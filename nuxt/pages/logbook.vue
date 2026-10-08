@@ -41,9 +41,22 @@
 }
 
 .page-top-header {
-  background-color: $color-primary-navy;
+  position: relative;
+  overflow: hidden;
   color: #FFFFFF;
   padding: 20px 16px 18px;
+  border-radius: 0 0 22px 22px;
+  box-shadow: 0 6px 20px rgba(10, 23, 39, 0.22);
+  background-image:
+    linear-gradient(
+      160deg,
+      rgba(8, 18, 34, 0.82) 0%,
+      rgba(14, 33, 56, 0.94) 60%,
+      rgba(10, 24, 42, 0.99) 100%
+    ),
+    url('/images/susiair-hero-bg.jpg');
+  background-size: cover;
+  background-position: center 55%;
 
   .page-title {
     font-size: 18px;

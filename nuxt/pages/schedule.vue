@@ -58,10 +58,23 @@ onMounted(() => {
 }
 
 .schedule-header {
-  background-color: $color-primary-navy;
+  position: relative;
+  overflow: hidden;
   color: #FFFFFF;
   padding: 20px 16px 18px;
-  box-shadow: 0 2px 10px rgba(14, 33, 56, 0.1);
+  box-shadow: 0 6px 20px rgba(10, 23, 39, 0.25);
+  border-radius: 0 0 22px 22px;
+
+  background-image:
+    linear-gradient(
+      160deg,
+      rgba(8, 18, 34, 0.82) 0%,
+      rgba(14, 33, 56, 0.94) 60%,
+      rgba(10, 24, 42, 0.99) 100%
+    ),
+    url('/images/susiair-hero-bg.jpg');
+  background-size: cover;
+  background-position: center 55%;
 
   .header-inner {
     display: flex;
@@ -76,18 +89,20 @@ onMounted(() => {
     color: #FFFFFF;
     margin: 0;
     line-height: 1.2;
+    letter-spacing: -0.2px;
   }
 
   .page-subtitle {
     font-size: 11.5px;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.68);
     margin-top: 3px;
   }
 
   .today-tag {
     font-size: 10.5px;
     font-weight: 600;
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: rgba(10, 23, 39, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     padding: 4px 8px;
     border-radius: $radius-pill;
     white-space: nowrap;

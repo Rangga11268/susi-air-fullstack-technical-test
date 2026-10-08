@@ -157,12 +157,10 @@ onMounted(() => {
 }
 
 .count-pill {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
-  padding: 3px 8px;
-  border-radius: $radius-pill;
-  background-color: rgba(14, 33, 56, 0.08);
-  color: $color-primary-navy;
+  color: $color-text-secondary;
+  font-variant-numeric: tabular-nums;
 }
 
 .empty-state {

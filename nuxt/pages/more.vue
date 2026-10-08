@@ -81,11 +81,11 @@ const pilotBase = computed(() => {
 });
 
 const avatarUrl = computed(() => {
-  return (
-    pilotStore.profile?.avatarUrl ||
-    authStore.user?.avatarUrl ||
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=JohnDoe'
-  );
+  const candidate = pilotStore.profile?.avatarUrl || authStore.user?.avatarUrl || '';
+  if (!candidate || candidate.includes('dicebear.com')) {
+    return '/images/pilot-avatar.jpg';
+  }
+  return candidate;
 });
 
 function handleLogout() {
@@ -103,9 +103,22 @@ function handleLogout() {
 }
 
 .page-top-header {
-  background-color: $color-primary-navy;
+  position: relative;
+  overflow: hidden;
   color: #FFFFFF;
   padding: 20px 16px 18px;
+  border-radius: 0 0 22px 22px;
+  box-shadow: 0 6px 20px rgba(10, 23, 39, 0.22);
+  background-image:
+    linear-gradient(
+      160deg,
+      rgba(8, 18, 34, 0.82) 0%,
+      rgba(14, 33, 56, 0.94) 60%,
+      rgba(10, 24, 42, 0.99) 100%
+    ),
+    url('/images/susiair-hero-bg.jpg');
+  background-size: cover;
+  background-position: center 55%;
 
   .page-title {
     font-size: 18px;
@@ -134,8 +147,9 @@ function handleLogout() {
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      border: 2px solid rgba(14, 33, 56, 0.1);
-      background-color: #F1F5F9;
+      object-fit: cover;
+      border: 2px solid rgba(14, 33, 56, 0.14);
+      background-color: #0E2138;
     }
   }
 

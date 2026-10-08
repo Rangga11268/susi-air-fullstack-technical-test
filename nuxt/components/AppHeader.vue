@@ -38,32 +38,39 @@
           :src="avatarUrl"
           :alt="pilotName"
           class="pilot-avatar"
+          @error="onAvatarError"
         />
       </div>
     </div>
 
     <div class="hours-kpi-card">
-      <div class="kpi-icon-cell">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
+      <div class="kpi-aircraft-cell">
+        <img
+          src="/images/susiair-caravan-hd.jpg"
+          alt="Cessna C208B Grand Caravan"
+          class="kpi-aircraft-img"
+        />
       </div>
       <div class="kpi-content">
         <span class="kpi-label">TOTAL FLIGHT HOURS</span>
-        <span class="kpi-value tabular-nums">{{ formattedHours }} <small>hrs</small></span>
+        <div class="kpi-value-row">
+          <span class="kpi-value tabular-nums">{{ formattedHours }} <small>hrs</small></span>
+          <span class="kpi-fleet-tag">C208B · PK-CAV</span>
+        </div>
       </div>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { usePilotStore } from '~/stores/pilot';
 
 const authStore = useAuthStore();
 const pilotStore = usePilotStore();
+
+const avatarFailed = ref(false);
 
 const pilotName = computed(() => {
   const name = pilotStore.profile?.name || authStore.user?.name || 'John Doe';
@@ -79,12 +86,17 @@ const pilotBase = computed(() => {
 });
 
 const avatarUrl = computed(() => {
-  return (
-    pilotStore.profile?.avatarUrl ||
-    authStore.user?.avatarUrl ||
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=JohnDoe'
-  );
+  if (avatarFailed.value) return '/images/pilot-avatar.jpg';
+  const candidate = pilotStore.profile?.avatarUrl || authStore.user?.avatarUrl || '';
+  if (!candidate || candidate.includes('dicebear.com')) {
+    return '/images/pilot-avatar.jpg';
+  }
+  return candidate;
 });
+
+function onAvatarError() {
+  avatarFailed.value = true;
+}
 
 const formattedHours = computed(() => {
   const hours = pilotStore.profile?.totalFlightHours || authStore.user?.totalFlightHours || 1444.5;
@@ -117,11 +129,24 @@ function handleLogout() {
 @use '~/assets/scss/variables' as *;
 
 .pilot-header {
-  background: linear-gradient(180deg, #0A1727 0%, #0E2138 100%);
-  color: $color-text-inverse;
+  position: relative;
+  overflow: hidden;
+  color: #FFFFFF;
   padding: 20px 16px 24px;
-  border-radius: 0 0 20px 20px;
-  box-shadow: 0 4px 14px rgba(10, 23, 39, 0.15);
+  border-radius: 0 0 22px 22px;
+  box-shadow: 0 6px 20px rgba(10, 23, 39, 0.22);
+
+  // HD aerial photo + dark navy operational overlay
+  background-image:
+    linear-gradient(
+      165deg,
+      rgba(8, 18, 34, 0.72) 0%,
+      rgba(14, 33, 56, 0.88) 55%,
+      rgba(10, 24, 42, 0.96) 100%
+    ),
+    url('/images/susiair-hero-bg.jpg');
+  background-size: cover;
+  background-position: center 35%;
 }
 
 .header-top {
@@ -153,8 +178,9 @@ function handleLogout() {
   font-weight: 600;
   padding: 5px 10px;
   border-radius: $radius-pill;
-  background-color: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(10, 23, 39, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
   letter-spacing: 0.02em;
 }
 
@@ -164,7 +190,7 @@ function handleLogout() {
   justify-content: center;
   min-width: $tap-target-min;
   min-height: $tap-target-min;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   border-radius: 50%;
   transition: color 0.15s ease, background-color 0.15s ease;
 
@@ -175,7 +201,12 @@ function handleLogout() {
 
   &:hover {
     color: #FFFFFF;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-chart-accent;
+    outline-offset: 2px;
   }
 }
 
@@ -190,33 +221,35 @@ function handleLogout() {
   flex: 1;
 
   .greeting-tag {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11.5px;
+    font-weight: 700;
     color: $color-chart-accent;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     display: block;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
   }
 
   .pilot-name {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
     color: #FFFFFF;
-    line-height: 1.2;
+    line-height: 1.15;
     margin: 0;
+    letter-spacing: -0.3px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   }
 
   .pilot-subtext {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.75);
-    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.82);
+    margin-top: 4px;
   }
 
   .pilot-base {
     font-size: 11px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.68);
     margin-top: 1px;
   }
 }
@@ -225,65 +258,83 @@ function handleLogout() {
   margin-left: 12px;
 
   .pilot-avatar {
-    width: 52px;
-    height: 52px;
+    width: 58px;
+    height: 58px;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.25);
-    background-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    object-fit: cover;
+    border: 2.5px solid rgba(255, 255, 255, 0.45);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    background-color: #0E2138;
   }
 }
 
 .hours-kpi-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  gap: 14px;
+  background-color: rgba(10, 23, 39, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: $radius-card;
-  padding: 12px 14px;
+  padding: 10px 14px;
+}
 
-  .kpi-icon-cell {
+.kpi-aircraft-cell {
+  width: 68px;
+  height: 48px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background-color: #0E2138;
+
+  .kpi-aircraft-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 45%;
+    display: block;
+  }
+}
+
+.kpi-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  .kpi-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .kpi-value-row {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    background-color: rgba(34, 197, 232, 0.15);
-    color: $color-chart-accent;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 2px;
+  }
 
-    svg {
-      width: 20px;
-      height: 20px;
+  .kpi-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1.1;
+
+    small {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.75);
+      margin-left: 2px;
     }
   }
 
-  .kpi-content {
-    display: flex;
-    flex-direction: column;
-
-    .kpi-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .kpi-value {
-      font-size: 22px;
-      font-weight: 800;
-      color: #FFFFFF;
-      line-height: 1.1;
-      margin-top: 2px;
-
-      small {
-        font-size: 13px;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.7);
-        margin-left: 2px;
-      }
-    }
+  .kpi-fleet-tag {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: $color-chart-accent;
+    letter-spacing: 0.03em;
   }
 }
 </style>

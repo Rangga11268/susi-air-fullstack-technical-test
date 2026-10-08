@@ -60,11 +60,11 @@ export class DataService implements OnModuleInit {
     this.pilotProfile = {
       username: 'johndoe',
       name: flightHoursRaw.pilot?.name || 'John Doe',
-      role: 'Line Captain · C208B Grand Caravan',
+      role: 'Line Captain - C208B Grand Caravan',
       base: 'CJN (Pangandaran)',
       totalFlightHours: Number(flightHoursRaw.pilot?.totalFlightHours || 1444.5),
       today: this.appToday,
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=JohnDoe',
+      avatarUrl: '/images/pilot-avatar.jpg',
     };
     this.limits = flightHoursRaw.limits || {};
     this.chartBounds = flightHoursRaw.chartBounds || {};
