@@ -70,23 +70,6 @@
             stroke-dasharray="5,4"
             stroke-width="1.5"
           />
-          <!-- Limit Label Tag -->
-          <rect
-            :x="width - margin.right - 62"
-            :y="limitY - 14"
-            width="62"
-            height="13"
-            rx="3"
-            fill="#E63757"
-          />
-          <text
-            :x="width - margin.right - 31"
-            :y="limitY - 4"
-            class="limit-tag-text"
-            text-anchor="middle"
-          >
-            Limit: {{ chartData.limit }}h
-          </text>
         </g>
 
         <!-- Today Centered Vertical Indicator -->
@@ -103,7 +86,7 @@
           <!-- Today Badge at Top -->
           <rect
             :x="todayX - 22"
-            :y="5"
+            :y="4"
             width="44"
             height="14"
             rx="7"
@@ -111,7 +94,7 @@
           />
           <text
             :x="todayX"
-            :y="15"
+            :y="14"
             class="today-badge-text"
             text-anchor="middle"
           >
@@ -142,6 +125,26 @@
           stroke-dasharray="4,3"
           stroke-linecap="round"
         />
+
+        <!-- Limit Label Tag (Positioned in highest-clearance slot to avoid node collision) -->
+        <g v-if="limitY !== null && limitBadgePos" class="limit-badge-layer">
+          <rect
+            :x="limitBadgePos.rectX"
+            :y="limitBadgePos.rectY"
+            width="62"
+            height="14"
+            rx="4"
+            fill="#E63757"
+          />
+          <text
+            :x="limitBadgePos.textX"
+            :y="limitBadgePos.textY"
+            class="limit-tag-text"
+            text-anchor="middle"
+          >
+            Limit: {{ chartData.limit }}h
+          </text>
+        </g>
 
         <!-- Data Points Nodes -->
         <g
@@ -206,11 +209,11 @@
             stroke-width="1.5"
           />
 
-          <!-- X-Axis Date Ticks (Show for select days) -->
+          <!-- Symmetric X-Axis Date Ticks (8 May, 11 May, 15 May, 19 May, 22 May) -->
           <text
-            v-if="idx % 3 === 0 || pt.isToday"
+            v-if="shouldShowTick(idx, pt.isToday)"
             :x="pt.x"
-            :y="bottomY + 14"
+            :y="bottomY + 15"
             class="date-tick-text"
             :class="{ 'bold-tick': pt.isToday }"
             text-anchor="middle"
@@ -319,6 +322,52 @@ const todayX = computed(() => {
   const todayPt = plottedPoints.value.find((p) => p.isToday);
   return todayPt ? todayPt.x : null;
 });
+
+// Choose the highest-clearance quadrant along the limit line so the badge never collides with data nodes
+const limitBadgePos = computed(() => {
+  if (limitY.value === null) return null;
+  const ly = limitY.value;
+  const bw = 62;
+  const bh = 14;
+
+  const candidates = [
+    { rectX: margin.left + 4, rectY: ly - bh - 3 },
+    { rectX: margin.left + 4, rectY: ly + 4 },
+    { rectX: width - margin.right - bw - 4, rectY: ly - bh - 3 },
+    { rectX: width - margin.right - bw - 4, rectY: ly + 4 },
+  ];
+
+  let best = candidates[0];
+  let bestMinDist = -1;
+
+  for (const c of candidates) {
+    if (c.rectY < 4) continue;
+    let minDist = Infinity;
+    for (const pt of plottedPoints.value) {
+      const dx = Math.max(c.rectX - pt.x, 0, pt.x - (c.rectX + bw));
+      const dy = Math.max(c.rectY - pt.y, 0, pt.y - (c.rectY + bh));
+      const dist = Math.hypot(dx, dy);
+      if (dist < minDist) minDist = dist;
+    }
+
+    if (minDist > bestMinDist) {
+      bestMinDist = minDist;
+      best = c;
+    }
+  }
+
+  return {
+    rectX: best.rectX,
+    rectY: best.rectY,
+    textX: best.rectX + bw / 2,
+    textY: best.rectY + 10,
+  };
+});
+
+function shouldShowTick(idx: number, isToday: boolean): boolean {
+  if (isToday) return true;
+  return idx === 0 || idx === 3 || idx === 11 || idx === 14;
+}
 
 // Line paths
 const areaPath = computed(() => {

@@ -12,7 +12,18 @@ export interface ApiErrorResponse {
 
 export function useApi() {
   const config = useRuntimeConfig();
-  const apiBase = (config.public?.apiBase as string) || 'http://localhost:3001';
+  const configuredBase = config.public?.apiBase as string | undefined;
+  const isProdBrowser =
+    typeof window !== 'undefined' &&
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1';
+
+  const apiBase =
+    configuredBase && configuredBase !== 'http://localhost:3001'
+      ? configuredBase
+      : isProdBrowser
+        ? 'https://susi-air-backend-api.vercel.app'
+        : 'http://localhost:3001';
 
   async function apiFetch<T>(endpoint: string, options: Parameters<typeof $fetch>[1] = {}): Promise<T> {
     const authStore = useAuthStore();

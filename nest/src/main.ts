@@ -1,10 +1,16 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { APP_CONFIG } from './config/app.config';
 
-async function bootstrap() {
+let cachedApp: INestApplication | null = null;
+
+async function createConfiguredApp(): Promise<INestApplication> {
+  if (cachedApp) {
+    return cachedApp;
+  }
+
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
@@ -23,10 +29,26 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new HttpExceptionFilter());
+  await app.init();
 
+  cachedApp = app;
+  return app;
+}
+
+async function bootstrap() {
+  const app = await createConfiguredApp();
   await app.listen(APP_CONFIG.port);
   console.log(
     `Susi Air API listening on port ${APP_CONFIG.port} with APP_TODAY=${APP_CONFIG.today}`,
   );
 }
-bootstrap();
+
+if (!process.env.VERCEL) {
+  bootstrap();
+}
+
+export default async function handler(req: any, res: any) {
+  const app = await createConfiguredApp();
+  const expressInstance = app.getHttpAdapter().getInstance();
+  return expressInstance(req, res);
+}
