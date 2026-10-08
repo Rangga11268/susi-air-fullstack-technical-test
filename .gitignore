@@ -1,0 +1,16 @@
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.nuxt/
+**/.nuxt/
+.output/
+**/.output/
+.env
+.env.*
+**/.env
+**/.env.*
+.DS_Store
+Thumbs.db
+*.log
+docs/

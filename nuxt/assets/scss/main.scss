@@ -1,0 +1,121 @@
+// Main Application SCSS for Susi Air Pilot App
+@use './variables' as *;
+@use './reset' as *;
+
+.app-shell {
+  max-width: $mobile-max-width;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: $color-bg;
+  position: relative;
+  box-shadow: 0 0 24px rgba(14, 33, 56, 0.08);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+  padding: 16px;
+  padding-bottom: $bottom-nav-clearance;
+}
+
+.card {
+  background: $color-surface;
+  border-radius: $radius-card;
+  border: 1px solid $color-border-subtle;
+  box-shadow: $card-shadow;
+  padding: 16px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: $color-text-primary;
+    line-height: 1.2;
+  }
+
+  .section-subtitle {
+    font-size: 12px;
+    color: $color-text-secondary;
+    margin-top: 2px;
+  }
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: $tap-target-min;
+  padding: 12px 24px;
+  border-radius: $radius-pill;
+  background-color: $color-brand-red;
+  color: $color-text-inverse;
+  font-weight: 700;
+  font-size: 14px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  width: 100%;
+
+  &:hover {
+    background-color: $color-brand-red-hover;
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: $radius-badge;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+
+  &.badge-safe {
+    background-color: rgba(31, 191, 143, 0.12);
+    color: $color-success;
+  }
+
+  &.badge-soon {
+    background-color: rgba(245, 158, 11, 0.12);
+    color: $color-warning;
+  }
+
+  &.badge-expired {
+    background-color: rgba(230, 55, 87, 0.12);
+    color: $color-danger;
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #FFFFFF;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
