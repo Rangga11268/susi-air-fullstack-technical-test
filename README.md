@@ -3,7 +3,7 @@
 Mobile-first operational web application for **PT ASI Pudjiastuti Aviation (Susi Air)** line pilots to track regulatory flight-hour duty limits, monitor aviation license and medical document expiry statuses, and inspect monthly roster schedules.
 
 ## Live Deployment URLs
-- **Frontend (Nuxt 3):** [https://susi-air-pilot-app.vercel.app](https://susi-air-pilot-app.vercel.app)
+- **Frontend (Nuxt 3):** [https://susi-air-pilot-app-six.vercel.app/](https://susi-air-pilot-app-six.vercel.app/)
 - **Backend API (NestJS):** [https://susi-air-backend-api.vercel.app](https://susi-air-backend-api.vercel.app)
 - **Demo Pilot Credentials:** `johndoe` / `susiairtest` (Reference date `APP_TODAY=2026-05-15`)
 
